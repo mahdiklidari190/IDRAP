@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دریافت توکن</title>
+    <style>
+        /* بخش CSS */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #token-count {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>توکن رایگان دریافت کنید!</h1>
+        <button id="claim-token">کلیک کنید</button>
+        <p id="token-count">توکن‌های شما: 0</p>
+    </div>
+
+    <script>
+        // بخش JavaScript
+        // ذخیره‌سازی داده‌ها در localStorage
+        let user = {
+            tokens: 0,
+            lastClaim: null,
+        };
+
+        // بارگذاری داده‌ها از localStorage
+        if (localStorage.getItem('user')) {
+            user = JSON.parse(localStorage.getItem('user'));
+            document.getElementById('token-count').innerText = `توکن‌های شما: ${user.tokens}`;
+        }
+
+        document.getElementById('claim-token').addEventListener('click', () => {
+            const now = new Date();
+            const lastClaim = user.lastClaim ? new Date(user.lastClaim) : null;
+
+            // بررسی محدودیت زمان (هر 24 ساعت یکبار)
+            if (lastClaim && (now - lastClaim) < 24 * 60 * 60 * 1000) {
+                alert('شما فقط یک بار در روز می‌توانید توکن دریافت کنید!');
+                return;
+            }
+
+            // افزایش توکن‌ها
+            user.tokens += 1;
+            user.lastClaim = now.toISOString();
+
+            // ذخیره‌سازی داده‌ها در localStorage
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // نمایش تعداد توکن‌ها
+            document.getElementById('token-count').innerText = `توکن‌های شما: ${user.tokens}`;
+        });
+    </script>
+</body>
+</html>
